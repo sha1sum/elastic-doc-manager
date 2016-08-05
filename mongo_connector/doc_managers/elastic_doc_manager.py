@@ -57,9 +57,9 @@ class DocManager(DocManagerBase):
                  unique_key='_id', chunk_size=DEFAULT_MAX_BULK,
                  meta_index_name="mongodb_meta", meta_type="mongodb_meta",
                  attachment_field="content", **kwargs):
-        aws = kwargs.get('aws', {'access_id': '', 'secret_key': '', 'region': 'us-east-1'})
         client_options = kwargs.get('clientOptions', {})
         if 'aws' in kwargs:
+            aws = kwargs.get('aws', {'access_id': '', 'secret_key': '', 'region': 'us-east-1'})
             aws_auth = AWS4Auth(aws['access_id'], aws['secret_key'], aws['region'], 'es')
             client_options['http_auth'] = aws_auth
             client_options['use_ssl'] = True
