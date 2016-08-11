@@ -34,8 +34,13 @@ from mongo_connector.constants import (DEFAULT_COMMIT_INTERVAL,
 from mongo_connector.util import exception_wrapper, retry_until_ok
 from mongo_connector.doc_managers.doc_manager_base import DocManagerBase
 from mongo_connector.doc_managers.formatters import DefaultDocumentFormatter
-from requests_aws_sign import AWSV4Sign
-from boto3 import session
+
+_HAS_AWS = True
+try:
+    from requests_aws_sign import AWSV4Sign
+    from boto3 import session
+except ImportError:
+    _HAS_AWS = False
 
 wrap_exceptions = exception_wrapper({
     es_exceptions.ConnectionError: errors.ConnectionFailed,
@@ -59,13 +64,14 @@ class DocManager(DocManagerBase):
                  attachment_field="content", **kwargs):
         client_options = kwargs.get('clientOptions', {})
         if 'aws' in kwargs:
+            if _HAS_AWS is False:
+                raise ConfigurationError('aws must be installed to sign elasticsearch requests')
             aws = kwargs.get('aws', {'access_id': '', 'secret_key': '', 'region': 'us-east-1'})
             aws_session = session.Session()
             if 'access_id' in aws and 'secret_key' in aws:
                 aws_session = session.Session(
                     aws_access_key_id = aws['access_id'],
-                    aws_secret_access_key = aws['secret_key']
-                )
+                    aws_secret_access_key = aws['secret_key'])
             credentials = aws_session.get_credentials()
             region = aws_session.region_name or aws['region']
             aws_auth = AWSV4Sign(credentials, region, 'es')
