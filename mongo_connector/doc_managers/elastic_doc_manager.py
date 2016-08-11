@@ -60,15 +60,14 @@ class DocManager(DocManagerBase):
         client_options = kwargs.get('clientOptions', {})
         if 'aws' in kwargs:
             aws = kwargs.get('aws', {'access_id': '', 'secret_key': '', 'region': 'us-east-1'})
-            session = session.Session()
-            if (aws['access_id'] and aws['secret_key']) {
-                session = session.Session(
+            aws_session = session.Session()
+            if aws['access_id'] and aws['secret_key']:
+                aws_session = session.Session(
                     aws_access_key_id = aws['access_id'],
                     aws_secret_access_key = aws['secret_key']
                 )
-            }
-            credentials = session.get_credentials()
-            region = session.region_name or aws['region']
+            credentials = aws_session.get_credentials()
+            region = aws_session.region_name or aws['region']
             aws_auth = AWSV4Sign(credentials, region, 'es')
             client_options['http_auth'] = aws_auth
             client_options['use_ssl'] = True
