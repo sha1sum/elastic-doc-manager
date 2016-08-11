@@ -61,7 +61,7 @@ class DocManager(DocManagerBase):
         if 'aws' in kwargs:
             aws = kwargs.get('aws', {'access_id': '', 'secret_key': '', 'region': 'us-east-1'})
             aws_session = session.Session()
-            if aws['access_id'] and aws['secret_key']:
+            if 'access_id' in aws and 'secret_key' in aws:
                 aws_session = session.Session(
                     aws_access_key_id = aws['access_id'],
                     aws_secret_access_key = aws['secret_key']
