@@ -7,7 +7,7 @@ except ImportError:
 import sys
 
 test_suite = "tests"
-tests_require = ["mongo-orchestration >= 0.2, < 0.4", "requests >= 2.5.1", "boto3 >= 1.4.0", "requests-aws-sign >= 0.1.1"]
+tests_require = ["mongo-orchestration >= 0.2, < 0.4", "requests >= 2.5.1"]
 
 if sys.version_info[:2] == (2, 6):
     # Need unittest2 to run unittests in Python 2.6
