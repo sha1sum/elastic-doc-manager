@@ -38,7 +38,7 @@ from mongo_connector.doc_managers.formatters import DefaultDocumentFormatter
 _HAS_AWS = True
 try:
     from requests_aws_sign import AWSV4Sign
-    from boto3 import session
+    from boto3 import session as aws_session
 except ImportError:
     _HAS_AWS = False
 
@@ -65,15 +65,15 @@ class DocManager(DocManagerBase):
         client_options = kwargs.get('clientOptions', {})
         if 'aws' in kwargs:
             if _HAS_AWS is False:
-                raise ConfigurationError('aws must be installed to sign elasticsearch requests')
-            aws = kwargs.get('aws', {'access_id': '', 'secret_key': '', 'region': 'us-east-1'})
-            aws_session = session.Session()
-            if 'access_id' in aws and 'secret_key' in aws:
-                aws_session = session.Session(
-                    aws_access_key_id = aws['access_id'],
-                    aws_secret_access_key = aws['secret_key'])
-            credentials = aws_session.get_credentials()
-            region = aws_session.region_name or aws['region']
+                raise ConfigurationError('aws extras must be installed to sign Elasticsearch requests')
+            aws_args = kwargs.get('aws', {'region': 'us-east-1'})
+            aws = aws_session.Session()
+            if 'access_id' in aws_args and 'secret_key' in aws_args:
+                aws = aws_session.Session(
+                    aws_access_key_id = aws_args['access_id'],
+                    aws_secret_access_key = aws_args['secret_key'])
+            credentials = aws.get_credentials()
+            region = aws.region_name or aws_args['region']
             aws_auth = AWSV4Sign(credentials, region, 'es')
             client_options['http_auth'] = aws_auth
             client_options['use_ssl'] = True
