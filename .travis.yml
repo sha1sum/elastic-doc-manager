@@ -16,6 +16,7 @@ install:
 before_script:
   - sudo service elasticsearch restart
   - mongo-orchestration start
+  - sleep 10
   - sudo lsof -n -iTCP:9200
   - sudo lsof -n -iTCP:8889
 
