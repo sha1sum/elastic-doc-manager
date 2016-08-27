@@ -2,12 +2,13 @@ try:
     from setuptools import setup
 except ImportError:
     from ez_setup import use_setuptools
+
     use_setuptools()
     from setuptools import setup
 import sys
 
 test_suite = "tests"
-tests_require = ["mongo-orchestration>= 0.2, < 0.4", "requests >= 2.5.1", "requests-aws4auth >= 0.7"]
+tests_require = ["mongo-orchestration >= 0.2, < 0.4", "requests >= 2.5.1"]
 
 if sys.version_info[:2] == (2, 6):
     # Need unittest2 to run unittests in Python 2.6
@@ -21,7 +22,7 @@ except IOError:
     long_description = None  # Install without README.rst
 
 setup(name='elastic-doc-manager',
-      version='0.1.0',
+      version='0.2.0',
       maintainer='mongodb',
       description='Elastic 1.x plugin for mongo-connector',
       long_description=long_description,
@@ -30,7 +31,8 @@ setup(name='elastic-doc-manager',
       author_email='mongodb-user@googlegroups.com',
       url='https://github.com/mongodb-labs/elastic-doc-manager',
       packages=["mongo_connector", "mongo_connector.doc_managers"],
-      install_requires=['mongo-connector >= 2.3.0', 'elasticsearch >= 1.2, < 2.0.0', 'requests >= 2.5.1', 'requests-aws4auth >= 0.7'],
+      install_requires=['mongo-connector >= 2.3.0', 'elasticsearch >= 1.2, < 2.0.0'],
+      extras_require={'aws': ['boto3 >= 1.4.0', 'requests-aws-sign >= 0.1.1']},
       license="Apache License, Version 2.0",
       classifiers=[
           "Development Status :: 4 - Beta",
@@ -50,4 +52,4 @@ setup(name='elastic-doc-manager',
       keywords=['mongo-connector', "mongodb", "elastic", "elasticsearch"],
       test_suite=test_suite,
       tests_require=tests_require
-)
+      )
